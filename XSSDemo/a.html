@@ -1,0 +1,26 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>XSS原理重现</title>
+
+<script language="javascript">
+  function CheckPost ()
+  {
+    var value=document.form1.xss_input_value.value;
+    document.write('<input type="text" value="'+value+'">');
+    return true;
+  }
+</script>
+</head>
+<body>
+<center>
+  <h1>把我们输入的字符串，输出到 input 里面的 value 属性里</h1>
+  <form name="form1" action="" method="get" onsubmit="return CheckPost();">
+    <h1>请输入您要显示的字符串</h1>
+    <input type="text" name="xss_input_value" value="输入"><br>
+    <input type="submit">
+  </form>
+  <hr>
+</center>
+</body>
+</html>

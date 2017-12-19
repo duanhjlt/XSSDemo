@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <script type="text/javascript" src="xss.js"></script>
+      <script type="text/javascript" src="lanxin-base64.js"></script>
+      <script>      
+          function XssToString(base64Content) {
+            var base64 = new Base64();
+            var content = base64.decode(base64Content);
+            
+            if (content == '' || !content ) {
+              return content;
+            }
+
+            if (Object.prototype.toString.call(content) != '[object String]') {
+              return content;
+            }
+ 
+            content= content.replace(/&/g,'&amp;').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+            content = content.replace(/'/g, "&#39;");
+ 
+            var options = {
+                whiteList: {
+                    a: ['href', 'title', 'target', 'src', 'border', 'width', 'height', 'bgcolor', 'list-style', 'text-align', 'iframe', 'http', 'appendChild', 'onerror', "'", 'createElement']
+                },
+
+                allowCommentTag: true
+            };
+
+            return filterXSS(content, options);
+          }
+          function loadFileData(content) {
+            var cleanData = XssToString(content);
+            document.write(cleanData);
+          }
+      </script>
+  </head>
+  <body>
+  </body>
+</html>
