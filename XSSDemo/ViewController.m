@@ -28,9 +28,13 @@
   _webview.delegate = self;
   [self.view addSubview:_webview];
   
+#if 1
   _loading = YES;
   
   NSString* path = [[NSBundle mainBundle]pathForResource:@"filterxss" ofType:@"html"];
+#else
+  NSString* path = [[NSBundle mainBundle]pathForResource:@"a" ofType:@"html"];
+#endif
   NSURL* url = [NSURL URLWithString:path];
   [_webview loadRequest:[NSURLRequest requestWithURL:url]];
 }
@@ -40,21 +44,24 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
   if (!_loading) return;
 
-#if 1
+  _loading = NO;
   NSString* path = [[NSBundle mainBundle]pathForResource:@"a" ofType:@"html"];
   NSData* data = [NSData dataWithContentsOfFile:path];
-#else
-  NSString* hhhh = @"admin:admin";
-  NSData* data = [hhhh dataUsingEncoding:NSUTF8StringEncoding];
-#endif
   
   NSString* string = [data base64Encoding];
+#if 0
   NSString* jsString = [NSString stringWithFormat:@"XssToString('%@');", string];
   
   NSString* result = [_webview stringByEvaluatingJavaScriptFromString:jsString];
-  _loading = NO;
   
   [_webview loadHTMLString:result baseURL:nil];
+#else
+  NSString* jsString = [NSString stringWithFormat:@"loadFileData('%@');", string];
+  
+  NSString* result = [_webview stringByEvaluatingJavaScriptFromString:jsString];
+#endif
+  
+  NSLog(@"%@", result);
 }
 
 @end
